@@ -40,14 +40,18 @@ export async function globalSearch(
   try {
     // Search books
     if (searchTypes.includes('book')) {
+      const searchPattern = `%${query.trim()}%`
       const { data: books, error: booksError } = await supabase
         .from('books')
-        .select('id, title, author, cover_image_url')
+        .select('id, title, author, cover_url')
         .eq('user_id', userId)
-        .or(`title.ilike.%${query}%,author.ilike.%${query}%,isbn.ilike.%${query}%`)
+        .or(`title.ilike.${searchPattern},author.ilike.${searchPattern},isbn.ilike.${searchPattern}`)
         .limit(limit)
 
-      if (booksError) throw booksError
+      if (booksError) {
+        console.error('Books search error:', booksError)
+        throw booksError
+      }
 
       if (books) {
         books.forEach((book) => {
@@ -68,6 +72,7 @@ export async function globalSearch(
 
     // Search notes
     if (searchTypes.includes('note')) {
+      const searchPattern = `%${query.trim()}%`
       const { data: notes, error: notesError } = await supabase
         .from('notes')
         .select(`
@@ -84,10 +89,13 @@ export async function globalSearch(
         `)
         .eq('user_id', userId)
         .eq('is_archived', false)
-        .or(`title.ilike.%${query}%,content.ilike.%${query}%`)
+        .or(`title.ilike.${searchPattern},content.ilike.${searchPattern}`)
         .limit(limit)
 
-      if (notesError) throw notesError
+      if (notesError) {
+        console.error('Notes search error:', notesError)
+        throw notesError
+      }
 
       if (notes) {
         notes.forEach((note: any) => {

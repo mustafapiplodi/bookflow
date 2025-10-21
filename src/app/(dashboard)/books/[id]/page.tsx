@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowLeft, Edit, Trash, Upload, Book as BookIcon, X, ZoomIn, Link2, Plus } from 'lucide-react'
+import { ArrowLeft, Edit, Trash, Upload, Book as BookIcon, X, ZoomIn } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { getBookById, updateBook, uploadBookCover } from '@/lib/api/books'
 import { Button } from '@/components/ui/button'
@@ -18,13 +18,10 @@ import { ReadingSessionPanel } from '@/components/sessions/reading-session-panel
 import { SessionHistoryWithNotes } from '@/components/sessions/session-history-with-notes'
 import { NotesList } from '@/components/notes/notes-list'
 import { ReadingTimeline } from '@/components/books/reading-timeline'
-import { AddRelationshipDialog } from '@/components/books/relationships/add-relationship-dialog'
-import { RelationshipsList } from '@/components/books/relationships/relationships-list'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { Database } from '@/types/database'
 import { toast } from 'sonner'
 import { getBookColor, getBookInitials } from '@/lib/utils/book-colors'
-import { getBookRelationships, type BookRelationshipWithBook } from '@/lib/api/book-relationships'
 
 type BookType = Database['public']['Tables']['books']['Row']
 type SessionType = Database['public']['Tables']['reading_sessions']['Row']
@@ -56,10 +53,9 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [relatedBooks, setRelatedBooks] = useState<BookType[]>([])
   const [sessions, setSessions] = useState<SessionType[]>([])
-  const [relationships, setRelationships] = useState<BookRelationshipWithBook[]>([])
-  const [addRelationshipOpen, setAddRelationshipOpen] = useState(false)
 
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
 
   useEffect(() => {
@@ -71,6 +67,27 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
       fetchBook()
     }
   }, [userId, params.id])
+
+  // Handle tab navigation from search
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    if (tab && book) {
+      // Wait for the page to render, then scroll to the section
+      setTimeout(() => {
+        const element = document.getElementById(tab)
+        if (element) {
+          // Get the element's position
+          const elementPosition = element.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - 80 // 80px offset for header
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
+        }
+      }, 300) // Increased timeout to ensure content is loaded
+    }
+  }, [searchParams, book])
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -88,10 +105,9 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
     try {
       const data = await getBookById(supabase, params.id, userId)
       setBook(data)
-      // Fetch related books, sessions, and relationships after getting the book
+      // Fetch related books and sessions after getting the book
       fetchRelatedBooks(data)
       fetchSessions()
-      fetchRelationships()
     } catch (error: any) {
       toast.error(error.message || 'Failed to fetch book')
       console.error(error)
@@ -138,18 +154,6 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
       setRelatedBooks(data || [])
     } catch (error: any) {
       console.error('Failed to fetch related books:', error)
-      // Don't show error toast as this is not critical
-    }
-  }
-
-  const fetchRelationships = async () => {
-    if (!userId) return
-
-    try {
-      const data = await getBookRelationships(userId, params.id)
-      setRelationships(data)
-    } catch (error: any) {
-      console.error('Failed to fetch book relationships:', error)
       // Don't show error toast as this is not critical
     }
   }
@@ -515,26 +519,6 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* Book Relationships */}
-      {userId && (
-        <div className="mt-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <Link2 className="h-6 w-6" />
-              Book Relationships
-            </h2>
-            <Button onClick={() => setAddRelationshipOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Relationship
-            </Button>
-          </div>
-          <RelationshipsList
-            relationships={relationships}
-            onRelationshipDeleted={fetchRelationships}
-          />
-        </div>
-      )}
-
       {/* Reading Session with Inline Notes */}
       {userId && (
         <div className="mt-8 space-y-8">
@@ -582,7 +566,7 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
           <Separator />
 
           {/* All Notes from This Book */}
-          <div>
+          <div id="notes">
             <h2 className="text-2xl font-bold mb-6">📝 All Notes</h2>
             <NotesList userId={userId} bookId={book.id} showBookInfo={false} />
           </div>
@@ -609,17 +593,6 @@ export default function BookDetailPage({ params }: { params: { id: string } }) {
           onOpenChange={setDeleteDialogOpen}
           userId={userId}
           onBookDeleted={handleDeleteSuccess}
-        />
-      )}
-
-      {/* Add Relationship Dialog */}
-      {userId && (
-        <AddRelationshipDialog
-          bookId={book.id}
-          bookTitle={book.title}
-          open={addRelationshipOpen}
-          onOpenChange={setAddRelationshipOpen}
-          onRelationshipAdded={fetchRelationships}
         />
       )}
 

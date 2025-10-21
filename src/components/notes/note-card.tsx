@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { MoreVertical, Pin, Archive, Trash, Edit, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { MoreVertical, Pin, Archive, Trash, Edit, ExternalLink, Link2 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Note, noteTypeLabels, noteTypeColors, noteTypeIcons } from '@/lib/api/notes'
+import { Note, noteTypeLabels, noteTypeColors, noteTypeIcons, getNoteById } from '@/lib/api/notes'
 import { format } from 'date-fns'
 
 interface NoteCardProps {
@@ -39,6 +40,34 @@ export function NoteCard({
   onToggleArchive,
 }: NoteCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [linkedNotes, setLinkedNotes] = useState<Note[]>([])
+  const [loadingLinked, setLoadingLinked] = useState(false)
+
+  // Load linked notes if this is a connection type
+  useEffect(() => {
+    if (note.note_type === 'connection' && note.linked_note_ids && note.linked_note_ids.length > 0) {
+      loadLinkedNotes()
+    }
+  }, [note.id, note.linked_note_ids])
+
+  const loadLinkedNotes = async () => {
+    if (!note.linked_note_ids || note.linked_note_ids.length === 0) return
+
+    setLoadingLinked(true)
+    try {
+      const loadedNotes = await Promise.all(
+        note.linked_note_ids.map((noteId) => getNoteById(noteId, note.user_id))
+      )
+      const validNotes = loadedNotes
+        .filter((result) => result.data !== null)
+        .map((result) => result.data!)
+      setLinkedNotes(validNotes)
+    } catch (error) {
+      console.error('Failed to load linked notes:', error)
+    } finally {
+      setLoadingLinked(false)
+    }
+  }
 
   // Strip HTML tags for preview
   const getPlainTextPreview = (html: string, maxLength: number = 150) => {
@@ -215,6 +244,50 @@ export function NoteCard({
                 {tag}
               </Badge>
             ))}
+          </div>
+        )}
+
+        {/* Linked Notes (for connection type) */}
+        {note.note_type === 'connection' && note.linked_note_ids && note.linked_note_ids.length > 0 && (
+          <div className="space-y-2">
+            <Separator />
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Link2 className="h-4 w-4" />
+              <span>Linked Notes ({note.linked_note_ids.length})</span>
+            </div>
+            {loadingLinked ? (
+              <div className="text-xs text-muted-foreground">Loading linked notes...</div>
+            ) : (
+              <div className="space-y-2">
+                {linkedNotes.map((linkedNote) => (
+                  <div
+                    key={linkedNote.id}
+                    className="flex items-start gap-2 p-2 rounded-md bg-muted/50 hover:bg-muted transition-colors"
+                  >
+                    <span className="text-lg">{noteTypeIcons[linkedNote.note_type]}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium line-clamp-1">
+                        {linkedNote.title || getPlainTextPreview(linkedNote.content, 50)}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        {linkedNote.books && (
+                          <span className="flex items-center gap-1">
+                            <ExternalLink className="h-3 w-3" />
+                            {linkedNote.books.title}
+                          </span>
+                        )}
+                        {linkedNote.page_number && (
+                          <span>• Page {linkedNote.page_number}</span>
+                        )}
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {noteTypeLabels[linkedNote.note_type]}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </CardContent>

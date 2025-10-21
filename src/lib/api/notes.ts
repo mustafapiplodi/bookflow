@@ -53,6 +53,7 @@ export interface CreateNoteInput {
   is_private?: boolean
   is_pinned?: boolean
   color?: string
+  linked_note_ids?: string[]
 }
 
 export interface UpdateNoteInput {
@@ -204,6 +205,7 @@ export async function createNote(userId: string, input: CreateNoteInput) {
       is_private: input.is_private || false,
       is_pinned: input.is_pinned || false,
       color: input.color || null,
+      linked_note_ids: input.linked_note_ids || null,
     })
     .select()
     .single()

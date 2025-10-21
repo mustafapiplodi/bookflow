@@ -27,10 +27,14 @@ import { toast } from 'sonner'
 
 interface CommandPaletteProps {
   userId: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function CommandPalette({ userId }: CommandPaletteProps) {
-  const [open, setOpen] = useState(false)
+export function CommandPalette({ userId, open: externalOpen, onOpenChange }: CommandPaletteProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = externalOpen !== undefined ? externalOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -65,16 +69,25 @@ export function CommandPalette({ userId }: CommandPaletteProps) {
     const searchTimeout = setTimeout(async () => {
       setIsSearching(true)
       try {
+        if (!userId) {
+          console.error('Search error: No user ID')
+          setResults([])
+          return
+        }
+
+        console.log('Searching for:', query, 'userId:', userId)
         const { data, error } = await globalSearch(userId, query)
 
         if (error) {
-          throw new Error(error.message)
+          console.error('Search error:', error)
+          throw new Error(error.message || 'Search failed')
         }
 
+        console.log('Search results:', data)
         setResults(data || [])
       } catch (error: any) {
-        toast.error('Search failed')
-        console.error(error)
+        console.error('Search exception:', error)
+        toast.error(error.message || 'Search failed')
       } finally {
         setIsSearching(false)
       }
@@ -133,18 +146,6 @@ export function CommandPalette({ userId }: CommandPaletteProps) {
 
   return (
     <>
-      {/* Trigger Button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-      >
-        <Search className="h-4 w-4" />
-        <span>Search...</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </button>
-
       {/* Command Dialog */}
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
@@ -152,7 +153,7 @@ export function CommandPalette({ userId }: CommandPaletteProps) {
           value={query}
           onValueChange={setQuery}
         />
-        <CommandList>
+        <CommandList shouldFilter={false}>
           {!query && (
             <>
               {/* Quick Actions */}
@@ -207,6 +208,7 @@ export function CommandPalette({ userId }: CommandPaletteProps) {
                         .map((result) => (
                           <CommandItem
                             key={result.id}
+                            value={result.title}
                             onSelect={() => handleSelect(result)}
                           >
                             <Book className="mr-2 h-4 w-4" />
@@ -235,6 +237,7 @@ export function CommandPalette({ userId }: CommandPaletteProps) {
                           .map((result) => (
                             <CommandItem
                               key={result.id}
+                              value={result.title}
                               onSelect={() => handleSelect(result)}
                             >
                               <span className="mr-2">{result.icon}</span>
