@@ -96,11 +96,16 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 flex-shrink-0"
+              >
                 <MoreVertical className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-48" sideOffset={5}>
               {onEdit && (
                 <DropdownMenuItem onClick={onEdit}>
                   <Edit className="h-4 w-4 mr-2" />
