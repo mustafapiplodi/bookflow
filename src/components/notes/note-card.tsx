@@ -6,12 +6,6 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -41,6 +35,7 @@ interface NoteCardProps {
 
 export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
 
   const deleteNote = useDeleteNote()
   const toggleAction = useToggleActionItem()
@@ -64,9 +59,15 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
       toast.success(
         note.is_action_item ? 'Removed from actions' : 'Added to action items'
       )
+      setShowMenu(false)
     } catch (error) {
       toast.error('Failed to update note')
     }
+  }
+
+  const handleDeleteClick = () => {
+    setShowMenu(false)
+    setShowDeleteDialog(true)
   }
 
   return (
@@ -94,46 +95,63 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
             </div>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 flex-shrink-0"
-              >
-                <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48" sideOffset={5}>
-              {onEdit && (
-                <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem onClick={handleToggleAction}>
-                {note.is_action_item ? (
-                  <>
-                    <Square className="h-4 w-4 mr-2" />
-                    Remove from Actions
-                  </>
-                ) : (
-                  <>
-                    <CheckSquare className="h-4 w-4 mr-2" />
-                    Mark as Action
-                  </>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setShowDeleteDialog(true)}
-                className="text-red-600"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 flex-shrink-0"
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              <MoreVertical className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+
+            {showMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowMenu(false)}
+                />
+                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-slate-200 py-1 z-50">
+                  {onEdit && (
+                    <button
+                      onClick={() => {
+                        onEdit()
+                        setShowMenu(false)
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </button>
+                  )}
+                  <button
+                    onClick={handleToggleAction}
+                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                  >
+                    {note.is_action_item ? (
+                      <>
+                        <Square className="h-4 w-4 mr-2" />
+                        Remove from Actions
+                      </>
+                    ) : (
+                      <>
+                        <CheckSquare className="h-4 w-4 mr-2" />
+                        Mark as Action
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleDeleteClick}
+                    className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </Card>
 
