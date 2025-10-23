@@ -4,20 +4,27 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import { Plus, X } from 'lucide-react'
 import { useCreateNote } from '@/hooks/use-notes'
+import { useSessionStore } from '@/lib/stores/session-store'
 import { toast } from 'sonner'
 
 interface InlineNoteEditorProps {
   bookId: string
-  sessionId?: string | null
 }
 
-export function InlineNoteEditor({ bookId, sessionId }: InlineNoteEditorProps) {
+export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [content, setContent] = useState('')
+  const [isActionItem, setIsActionItem] = useState(false)
 
+  const { activeSessionId, bookId: activeBookId } = useSessionStore()
   const createNote = useCreateNote()
+
+  // Get the active session ID if it matches this book
+  const sessionId = activeBookId === bookId ? activeSessionId : null
 
   const handleSave = async () => {
     if (!content.trim()) {
@@ -30,9 +37,11 @@ export function InlineNoteEditor({ bookId, sessionId }: InlineNoteEditorProps) {
         book_id: bookId,
         session_id: sessionId,
         content: content.trim(),
+        is_action_item: isActionItem,
       })
-      toast.success('Note saved')
+      toast.success(isActionItem ? 'Action item saved' : 'Note saved')
       setContent('')
+      setIsActionItem(false)
       setIsOpen(false)
     } catch (error) {
       toast.error('Failed to save note')
@@ -80,6 +89,26 @@ export function InlineNoteEditor({ bookId, sessionId }: InlineNoteEditorProps) {
           className="resize-none"
           autoFocus
         />
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="action-item"
+            checked={isActionItem}
+            onCheckedChange={(checked) => setIsActionItem(checked as boolean)}
+          />
+          <Label
+            htmlFor="action-item"
+            className="text-sm font-normal cursor-pointer"
+          >
+            Mark as action item
+          </Label>
+        </div>
+
+        {sessionId && (
+          <p className="text-xs text-slate-500">
+            This note will be linked to your current reading session
+          </p>
+        )}
 
         <div className="flex gap-2">
           <Button
