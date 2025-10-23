@@ -4,9 +4,11 @@ import Link from 'next/link'
 import { useBook } from '@/hooks/use-books'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Play, Clock, FileText, CheckSquare } from 'lucide-react'
+import { ArrowLeft, Clock, FileText, CheckSquare } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
+import { SessionTimer } from '@/components/sessions/session-timer'
+import { SessionHistoryList } from '@/components/sessions/session-history-list'
 
 interface BookDetailPageProps {
   params: { id: string }
@@ -87,11 +89,6 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
           </div>
 
           <div className="space-y-4">
-            <Button className="w-full" size="lg">
-              <Play className="w-4 h-4 mr-2" />
-              Start Reading
-            </Button>
-
             {book.rating && (
               <div className="flex justify-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -116,6 +113,11 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
             </div>
           </div>
 
+          {/* Reading Timer */}
+          <div className="mt-8">
+            <SessionTimer bookId={book.id} bookTitle={book.title} />
+          </div>
+
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mt-8">
             <div className="p-4 rounded-lg bg-white border">
@@ -124,8 +126,19 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                 <span className="text-sm">Reading Time</span>
               </div>
               <p className="text-2xl font-bold">
-                {Math.floor((book.total_reading_time || 0) / 60)}h{' '}
-                {(book.total_reading_time || 0) % 60}m
+                {(() => {
+                  const totalSeconds = book.total_reading_time || 0
+                  if (totalSeconds < 60) return `${totalSeconds}s`
+
+                  const hours = Math.floor(totalSeconds / 3600)
+                  const minutes = Math.floor((totalSeconds % 3600) / 60)
+                  const secs = totalSeconds % 60
+
+                  if (hours > 0) {
+                    return secs > 0 ? `${hours}h ${minutes}m ${secs}s` : `${hours}h ${minutes}m`
+                  }
+                  return secs > 0 ? `${minutes}m ${secs}s` : `${minutes}m`
+                })()}
               </p>
             </div>
 
@@ -164,9 +177,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
         </TabsList>
 
         <TabsContent value="sessions" className="mt-6">
-          <div className="text-center py-8 text-slate-600">
-            No sessions yet. Start reading to track your sessions.
-          </div>
+          <SessionHistoryList bookId={book.id} />
         </TabsContent>
 
         <TabsContent value="notes" className="mt-6">
