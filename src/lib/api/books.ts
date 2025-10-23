@@ -1,128 +1,118 @@
+import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/types/database'
 
-type Book = Database['public']['Tables']['books']['Row']
 type BookInsert = Database['public']['Tables']['books']['Insert']
 type BookUpdate = Database['public']['Tables']['books']['Update']
 
-export async function getBooks(supabase: any, userId: string) {
-  const { data, error } = await supabase
+export async function getBooks(status?: string) {
+  const supabase = createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  let query = supabase
     .from('books')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  if (error) throw error
-  return data as Book[]
-}
+  if (status) {
+    query = query.eq('status', status)
+  }
 
-export async function getBookById(supabase: any, bookId: string, userId: string) {
-  const { data, error } = await supabase
-    .from('books')
-    .select('*')
-    .eq('id', bookId)
-    .eq('user_id', userId)
-    .single()
-
-  if (error) throw error
-  return data as Book
-}
-
-export async function getBooksByShelves(supabase: any, userId: string, shelfIds: string[]) {
-  const { data, error } = await supabase
-    .from('book_shelves')
-    .select(`
-      book_id,
-      books (*)
-    `)
-    .in('shelf_id', shelfIds)
-    .eq('books.user_id', userId)
+  const { data, error } = await query
 
   if (error) throw error
   return data
 }
 
-export async function createBook(supabase: any, book: BookInsert) {
+export async function getBook(id: string) {
+  const supabase = createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
   const { data, error } = await supabase
     .from('books')
-    .insert(book)
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', user.id)
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function createBook(book: Omit<BookInsert, 'user_id'>) {
+  const supabase = createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { data, error } = await supabase
+    .from('books')
+    .insert({
+      ...book,
+      user_id: user.id,
+    })
     .select()
     .single()
 
   if (error) throw error
-  return data as Book
+  return data
 }
 
-export async function updateBook(supabase: any, bookId: string, updates: BookUpdate, userId: string) {
+export async function updateBook(id: string, updates: BookUpdate) {
+  const supabase = createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
   const { data, error } = await supabase
     .from('books')
     .update(updates)
-    .eq('id', bookId)
-    .eq('user_id', userId)
+    .eq('id', id)
+    .eq('user_id', user.id)
     .select()
     .single()
 
   if (error) throw error
-  return data as Book
+  return data
 }
 
-export async function deleteBook(supabase: any, bookId: string, userId: string) {
+export async function deleteBook(id: string) {
+  const supabase = createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
   const { error } = await supabase
     .from('books')
     .delete()
-    .eq('id', bookId)
-    .eq('user_id', userId)
+    .eq('id', id)
+    .eq('user_id', user.id)
 
   if (error) throw error
 }
 
-export async function addBookToShelf(supabase: any, bookId: string, shelfId: string) {
-  const { data, error } = await supabase
-    .from('book_shelves')
-    .insert({ book_id: bookId, shelf_id: shelfId })
-    .select()
-    .single()
+export async function uploadBookCover(file: File): Promise<string> {
+  const supabase = createClient()
 
-  if (error) throw error
-  return data
-}
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
 
-export async function removeBookFromShelf(supabase: any, bookId: string, shelfId: string) {
-  const { error } = await supabase
-    .from('book_shelves')
-    .delete()
-    .eq('book_id', bookId)
-    .eq('shelf_id', shelfId)
-
-  if (error) throw error
-}
-
-export async function getBookShelves(supabase: any, bookId: string) {
-  const { data, error } = await supabase
-    .from('book_shelves')
-    .select(`
-      shelf_id,
-      shelves (*)
-    `)
-    .eq('book_id', bookId)
-
-  if (error) throw error
-  return data
-}
-
-export async function uploadBookCover(supabase: any, userId: string, bookId: string, file: File) {
   const fileExt = file.name.split('.').pop()
-  const fileName = `${userId}/${bookId}.${fileExt}`
-  const filePath = `book-covers/${fileName}`
+  const fileName = `${user.id}/${Math.random()}.${fileExt}`
 
-  const { data, error } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from('book-covers')
-    .upload(filePath, file, { upsert: true })
+    .upload(fileName, file)
 
-  if (error) throw error
+  if (uploadError) throw uploadError
 
-  const { data: { publicUrl } } = supabase.storage
+  const { data } = supabase.storage
     .from('book-covers')
-    .getPublicUrl(filePath)
+    .getPublicUrl(fileName)
 
-  return publicUrl
+  return data.publicUrl
 }

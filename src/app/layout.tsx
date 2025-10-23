@@ -1,15 +1,14 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Toaster } from 'sonner'
-import { ThemeProvider } from '@/components/theme-provider'
-import { QueryProvider } from '@/lib/providers/query-provider'
-import '@/styles/globals.css'
+import './globals.css'
+import { QueryProvider } from '@/components/providers/query-provider'
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'BookFlow - Your Reading Companion',
-  description: 'Track your reading progress, take notes, and build knowledge',
+  description: 'Track your reading, take notes, and build your knowledge base',
 }
 
 export default function RootLayout({
@@ -18,18 +17,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
         <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster position="top-center" richColors />
-          </ThemeProvider>
+          {children}
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
