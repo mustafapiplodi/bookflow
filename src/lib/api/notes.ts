@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/types/database'
+import { createAction, deleteAction } from './actions'
 
 type NoteInsert = Database['public']['Tables']['notes']['Insert']
 type NoteUpdate = Database['public']['Tables']['notes']['Update']
@@ -96,5 +97,29 @@ export async function deleteNote(id: string) {
 }
 
 export async function toggleActionItem(id: string, isActionItem: boolean) {
-  return updateNote(id, { is_action_item: isActionItem })
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  // Update the note
+  const note = await updateNote(id, { is_action_item: isActionItem })
+
+  if (isActionItem) {
+    // Create an action entry if marking as action item
+    await createAction(id)
+  } else {
+    // Delete the action entry if unmarking
+    const { data: existingAction } = await supabase
+      .from('actions')
+      .select('id')
+      .eq('note_id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (existingAction) {
+      await deleteAction(existingAction.id)
+    }
+  }
+
+  return note
 }
