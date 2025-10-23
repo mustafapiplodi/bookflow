@@ -9,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { SessionTimer } from '@/components/sessions/session-timer'
 import { SessionHistoryList } from '@/components/sessions/session-history-list'
+import { InlineNoteEditor } from '@/components/notes/inline-note-editor'
+import { NotesList } from '@/components/notes/notes-list'
 
 interface BookDetailPageProps {
   params: { id: string }
@@ -181,8 +183,9 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
         </TabsContent>
 
         <TabsContent value="notes" className="mt-6">
-          <div className="text-center py-8 text-slate-600">
-            No notes yet. Take notes during your reading sessions.
+          <div className="space-y-4">
+            <InlineNoteEditor bookId={book.id} />
+            <NotesList bookId={book.id} />
           </div>
         </TabsContent>
 
