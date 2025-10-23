@@ -11,6 +11,7 @@ import { SessionTimer } from '@/components/sessions/session-timer'
 import { SessionHistoryList } from '@/components/sessions/session-history-list'
 import { InlineNoteEditor } from '@/components/notes/inline-note-editor'
 import { NotesList } from '@/components/notes/notes-list'
+import { BookActionsList } from '@/components/actions/book-actions-list'
 
 interface BookDetailPageProps {
   params: { id: string }
@@ -190,9 +191,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
         </TabsContent>
 
         <TabsContent value="actions" className="mt-6">
-          <div className="text-center py-8 text-slate-600">
-            No action items yet. Mark notes as actions to track them here.
-          </div>
+          <BookActionsList bookId={book.id} />
         </TabsContent>
       </Tabs>
     </div>

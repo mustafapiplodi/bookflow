@@ -9,6 +9,7 @@ export interface ActionWithNote extends Action {
   note: {
     content: string
     books: {
+      id: string
       title: string
     } | null
   }
@@ -30,6 +31,7 @@ export async function getActions(): Promise<ActionWithNote[]> {
       note:notes (
         content,
         books (
+          id,
           title
         )
       )

@@ -19,6 +19,7 @@ interface ActionCardProps {
     note: {
       content: string
       books?: {
+        id: string
         title: string
       } | null
     }
