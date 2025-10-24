@@ -72,7 +72,7 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
           Top-Rated Books
         </h3>
       </div>
-      <p className="text-sm text-slate-600 mb-6">
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
         Your highest-rated reading experiences
       </p>
 
@@ -91,10 +91,10 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">
                   {book.title}
                 </h4>
-                <p className="text-sm text-slate-600 truncate mb-2">
+                <p className="text-sm text-slate-600 dark:text-slate-400 truncate mb-2">
                   {book.author}
                 </p>
 

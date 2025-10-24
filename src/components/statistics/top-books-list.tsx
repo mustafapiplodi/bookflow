@@ -61,7 +61,7 @@ export function TopBooksList({ books, isLoading }: TopBooksListProps) {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold text-slate-900 mb-6">
+      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
         Most Read Books
       </h3>
       <div className="space-y-3">
@@ -79,10 +79,10 @@ export function TopBooksList({ books, isLoading }: TopBooksListProps) {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">
                   {book.title}
                 </h4>
-                <p className="text-sm text-slate-600 truncate">
+                <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
                   {book.author}
                 </p>
               </div>
