@@ -35,7 +35,7 @@ export default function NotesPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Notes</h1>
+        <h1 className="text-3xl font-bold mb-2 dark:text-white">Notes</h1>
         <p className="text-slate-600">
           All your reading notes in one place
         </p>

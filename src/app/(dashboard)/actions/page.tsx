@@ -15,7 +15,7 @@ export default function ActionsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Actions</h1>
+        <h1 className="text-3xl font-bold mb-2 dark:text-white">Actions</h1>
         <p className="text-slate-600">
           Track and complete action items from your reading
         </p>

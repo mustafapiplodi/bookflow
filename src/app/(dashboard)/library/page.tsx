@@ -25,8 +25,8 @@ export default function LibraryPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">My Library</h1>
-          <p className="text-slate-600">Manage your reading collection</p>
+          <h1 className="text-3xl font-bold mb-2 dark:text-white">My Library</h1>
+          <p className="text-slate-600 dark:text-slate-400">Manage your reading collection</p>
         </div>
         <AddBookDialog>
           <Button>

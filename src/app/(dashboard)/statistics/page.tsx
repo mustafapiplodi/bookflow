@@ -20,8 +20,8 @@ export default function StatisticsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Statistics</h1>
-        <p className="text-slate-600">
+        <h1 className="text-3xl font-bold mb-2 dark:text-white">Statistics</h1>
+        <p className="text-slate-600 dark:text-slate-400">
           Track your reading progress and insights
         </p>
       </div>
