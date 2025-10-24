@@ -39,6 +39,7 @@ export function useUpdateNote() {
       updateNote(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      queryClient.invalidateQueries({ queryKey: ['actions'] })
     },
   })
 }
@@ -62,6 +63,8 @@ export function useToggleActionItem() {
       toggleActionItem(id, isActionItem),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      queryClient.invalidateQueries({ queryKey: ['actions'] })
+      queryClient.invalidateQueries({ queryKey: ['action-tags'] })
     },
   })
 }

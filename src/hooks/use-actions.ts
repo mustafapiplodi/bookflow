@@ -45,6 +45,7 @@ export function useDeleteAction() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['actions'] })
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      queryClient.invalidateQueries({ queryKey: ['action-tags'] })
     },
   })
 }

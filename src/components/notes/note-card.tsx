@@ -18,7 +18,8 @@ import {
 import { MoreVertical, CheckSquare, Square, Trash2, Edit, Save, X } from 'lucide-react'
 import { useDeleteNote, useToggleActionItem, useUpdateNote } from '@/hooks/use-notes'
 import { toast } from 'sonner'
-import { Textarea } from '@/components/ui/textarea'
+import { NoteTags } from './note-tags'
+import { RichTextEditor } from './rich-text-editor'
 
 interface NoteCardProps {
   note: {
@@ -114,12 +115,10 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
             )}
             {isEditing ? (
               <div className="space-y-2">
-                <Textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  rows={4}
-                  className="resize-none"
-                  autoFocus
+                <RichTextEditor
+                  content={editContent}
+                  onChange={setEditContent}
+                  placeholder="Edit your note..."
                 />
                 <div className="flex gap-2">
                   <Button
@@ -142,19 +141,23 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
                 </div>
               </div>
             ) : (
-              <p className="text-slate-800 whitespace-pre-wrap break-words">
-                {note.content}
-              </p>
+              <div
+                className="text-slate-800 prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: note.content }}
+              />
             )}
-            <div className="flex items-center gap-2 mt-3">
-              <p className="text-xs text-slate-500">
-                {format(new Date(note.created_at), 'MMM d, yyyy')}
-              </p>
-              {note.is_action_item && (
-                <Badge variant="secondary" className="text-xs">
-                  Action Item
-                </Badge>
-              )}
+            <div className="space-y-2 mt-3">
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-slate-500">
+                  {format(new Date(note.created_at), 'MMM d, yyyy')}
+                </p>
+                {note.is_action_item && (
+                  <Badge variant="secondary" className="text-xs">
+                    Action Item
+                  </Badge>
+                )}
+              </div>
+              <NoteTags noteId={note.id} editable={!isEditing} />
             </div>
           </div>
 

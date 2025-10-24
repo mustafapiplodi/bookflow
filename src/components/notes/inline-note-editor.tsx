@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
@@ -10,6 +9,7 @@ import { Plus, X } from 'lucide-react'
 import { useCreateNote } from '@/hooks/use-notes'
 import { useSessionStore } from '@/lib/stores/session-store'
 import { toast } from 'sonner'
+import { RichTextEditor } from './rich-text-editor'
 
 interface InlineNoteEditorProps {
   bookId: string
@@ -17,7 +17,7 @@ interface InlineNoteEditorProps {
 
 export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState('<p></p>')
   const [isActionItem, setIsActionItem] = useState(false)
 
   const { activeSessionId, bookId: activeBookId } = useSessionStore()
@@ -27,7 +27,12 @@ export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
   const sessionId = activeBookId === bookId ? activeSessionId : null
 
   const handleSave = async () => {
-    if (!content.trim()) {
+    // Check if content is empty (only has empty paragraph tags)
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = content
+    const textContent = tempDiv.textContent || tempDiv.innerText || ''
+
+    if (!textContent.trim()) {
       toast.error('Please enter some content')
       return
     }
@@ -36,11 +41,11 @@ export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
       await createNote.mutateAsync({
         book_id: bookId,
         session_id: sessionId,
-        content: content.trim(),
+        content: content,
         is_action_item: isActionItem,
       })
       toast.success(isActionItem ? 'Action item saved' : 'Note saved')
-      setContent('')
+      setContent('<p></p>')
       setIsActionItem(false)
       setIsOpen(false)
     } catch (error) {
@@ -49,7 +54,7 @@ export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
   }
 
   const handleCancel = () => {
-    setContent('')
+    setContent('<p></p>')
     setIsOpen(false)
   }
 
@@ -81,13 +86,10 @@ export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
           </Button>
         </div>
 
-        <Textarea
+        <RichTextEditor
+          content={content}
+          onChange={setContent}
           placeholder="Capture your thoughts, insights, or questions..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={4}
-          className="resize-none"
-          autoFocus
         />
 
         <div className="flex items-center space-x-2">
@@ -113,7 +115,7 @@ export function InlineNoteEditor({ bookId }: InlineNoteEditorProps) {
         <div className="flex gap-2">
           <Button
             onClick={handleSave}
-            disabled={createNote.isPending || !content.trim()}
+            disabled={createNote.isPending}
             className="flex-1"
           >
             {createNote.isPending ? 'Saving...' : 'Save Note'}

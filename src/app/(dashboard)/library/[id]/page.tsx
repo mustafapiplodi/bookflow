@@ -1,10 +1,11 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useBook } from '@/hooks/use-books'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Clock, FileText, CheckSquare } from 'lucide-react'
+import { ArrowLeft, Clock, FileText, CheckSquare, CheckCircle } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { SessionTimer } from '@/components/sessions/session-timer'
@@ -12,6 +13,11 @@ import { SessionHistoryList } from '@/components/sessions/session-history-list'
 import { InlineNoteEditor } from '@/components/notes/inline-note-editor'
 import { NotesList } from '@/components/notes/notes-list'
 import { BookActionsList } from '@/components/actions/book-actions-list'
+import { BookCompletionDialog } from '@/components/books/book-completion-dialog'
+import { TagFilter } from '@/components/notes/tag-filter'
+import { NoteCard } from '@/components/notes/note-card'
+import { createClient } from '@/lib/supabase/client'
+import { useNotesByTag } from '@/hooks/use-tags'
 
 interface BookDetailPageProps {
   params: { id: string }
@@ -20,6 +26,45 @@ interface BookDetailPageProps {
 export default function BookDetailPage({ params }: BookDetailPageProps) {
   const { id } = params
   const { data: book, isLoading } = useBook(id)
+  const [showCompletionDialog, setShowCompletionDialog] = useState(false)
+  const [notesCount, setNotesCount] = useState(0)
+  const [actionsCount, setActionsCount] = useState(0)
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const { data: taggedNotes, isLoading: isLoadingTagged } = useNotesByTag(selectedTag || '')
+
+  useEffect(() => {
+    async function fetchCounts() {
+      const supabase = createClient()
+
+      // Get notes count
+      const { count: notes } = await supabase
+        .from('notes')
+        .select('*', { count: 'exact', head: true })
+        .eq('book_id', id)
+
+      // Get actions count for this book
+      const { data: noteIds } = await supabase
+        .from('notes')
+        .select('id')
+        .eq('book_id', id)
+        .eq('is_action_item', true)
+
+      if (noteIds && noteIds.length > 0) {
+        const { count: actions } = await supabase
+          .from('actions')
+          .select('*', { count: 'exact', head: true })
+          .in('note_id', noteIds.map(n => n.id))
+
+        setActionsCount(actions || 0)
+      }
+
+      setNotesCount(notes || 0)
+    }
+
+    if (id) {
+      fetchCounts()
+    }
+  }, [id])
 
   if (isLoading) {
     return (
@@ -116,9 +161,19 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
             </div>
           </div>
 
-          {/* Reading Timer */}
-          <div className="mt-8">
+          {/* Reading Timer & Mark as Finished */}
+          <div className="mt-8 space-y-4">
             <SessionTimer bookId={book.id} bookTitle={book.title} />
+
+            {book.status === 'reading' && (
+              <Button
+                onClick={() => setShowCompletionDialog(true)}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Mark as Finished
+              </Button>
+            )}
           </div>
 
           {/* Stats Grid */}
@@ -150,7 +205,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                 <FileText className="w-4 h-4" />
                 <span className="text-sm">Notes</span>
               </div>
-              <p className="text-2xl font-bold">0</p>
+              <p className="text-2xl font-bold">{notesCount}</p>
             </div>
 
             <div className="p-4 rounded-lg bg-white border">
@@ -158,7 +213,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                 <CheckSquare className="w-4 h-4" />
                 <span className="text-sm">Actions</span>
               </div>
-              <p className="text-2xl font-bold">0</p>
+              <p className="text-2xl font-bold">{actionsCount}</p>
             </div>
           </div>
 
@@ -186,7 +241,39 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
         <TabsContent value="notes" className="mt-6">
           <div className="space-y-4">
             <InlineNoteEditor bookId={book.id} />
-            <NotesList bookId={book.id} />
+
+            <div className="mb-4">
+              <TagFilter selectedTag={selectedTag} onSelectTag={setSelectedTag} />
+            </div>
+
+            {selectedTag ? (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-slate-700">
+                  Notes tagged with "{selectedTag}"
+                </h3>
+                {isLoadingTagged ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-32 bg-slate-100 rounded-lg animate-pulse" />
+                    ))}
+                  </div>
+                ) : taggedNotes && taggedNotes.length > 0 ? (
+                  <div className="space-y-4">
+                    {taggedNotes
+                      .filter((note: any) => note.book_id === book.id)
+                      .map((note: any) => (
+                        <NoteCard key={note.id} note={note} />
+                      ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-500 text-center py-8">
+                    No notes found with this tag for this book
+                  </p>
+                )}
+              </div>
+            ) : (
+              <NotesList bookId={book.id} />
+            )}
           </div>
         </TabsContent>
 
@@ -194,6 +281,13 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
           <BookActionsList bookId={book.id} />
         </TabsContent>
       </Tabs>
+
+      <BookCompletionDialog
+        open={showCompletionDialog}
+        onOpenChange={setShowCompletionDialog}
+        bookId={book.id}
+        bookTitle={book.title}
+      />
     </div>
   )
 }
