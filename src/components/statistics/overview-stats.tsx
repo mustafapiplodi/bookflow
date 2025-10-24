@@ -115,7 +115,7 @@ export function OverviewStats({ stats, isLoading }: OverviewStatsProps) {
                 <p className="text-2xl font-bold text-slate-900 mb-1">
                   {stat.value}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {stat.subtitle}
                 </p>
               </div>

@@ -48,8 +48,8 @@ export function TopBooksList({ books, isLoading }: TopBooksListProps) {
         <h3 className="text-lg font-semibold text-slate-900 mb-6">
           Most Read Books
         </h3>
-        <div className="text-center py-8 text-slate-600">
-          <BookOpen className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+          <BookOpen className="h-12 w-12 mx-auto mb-3 text-slate-400 dark:text-slate-600" />
           <p>No reading data yet</p>
           <p className="text-sm text-slate-500 mt-1">
             Start tracking your reading sessions to see statistics
@@ -71,7 +71,7 @@ export function TopBooksList({ books, isLoading }: TopBooksListProps) {
             href={`/library/${book.id}`}
             className="block group"
           >
-            <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-slate-50 transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
               <div className="flex-shrink-0 w-8 text-center">
                 <span className="text-lg font-bold text-slate-400">
                   #{index + 1}
@@ -87,7 +87,7 @@ export function TopBooksList({ books, isLoading }: TopBooksListProps) {
                 </p>
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-slate-600">
+              <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   <span>{formatTime(book.readingTime)}</span>

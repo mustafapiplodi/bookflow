@@ -178,7 +178,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mt-8">
-            <div className="p-4 rounded-lg bg-white border">
+            <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700">
               <div className="flex items-center gap-2 text-slate-600 mb-1">
                 <Clock className="w-4 h-4" />
                 <span className="text-sm">Reading Time</span>
@@ -200,7 +200,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-white border">
+            <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700">
               <div className="flex items-center gap-2 text-slate-600 mb-1">
                 <FileText className="w-4 h-4" />
                 <span className="text-sm">Notes</span>
@@ -208,7 +208,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
               <p className="text-2xl font-bold">{notesCount}</p>
             </div>
 
-            <div className="p-4 rounded-lg bg-white border">
+            <div className="p-4 rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700">
               <div className="flex items-center gap-2 text-slate-600 mb-1">
                 <CheckSquare className="w-4 h-4" />
                 <span className="text-sm">Actions</span>
@@ -218,9 +218,9 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
           </div>
 
           {book.one_sentence_takeaway && (
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
               <p className="text-sm font-medium text-blue-900 mb-1">Key Takeaway</p>
-              <p className="text-blue-700">{book.one_sentence_takeaway}</p>
+              <p className="text-blue-700 dark:text-blue-300">{book.one_sentence_takeaway}</p>
             </div>
           )}
         </div>
@@ -248,7 +248,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
 
             {selectedTag ? (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-700">
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">
                   Notes tagged with "{selectedTag}"
                 </h3>
                 {isLoadingTagged ? (

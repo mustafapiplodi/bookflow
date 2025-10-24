@@ -92,7 +92,7 @@ export function ActionsList({ filter, searchQuery = '', selectedTag = null }: Ac
 
   if (!actions || actions.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-600">
+      <div className="text-center py-12 text-slate-600 dark:text-slate-400">
         <p className="text-lg font-medium mb-2">No action items yet</p>
         <p className="text-sm">
           Mark notes as action items to start tracking your goals
@@ -103,7 +103,7 @@ export function ActionsList({ filter, searchQuery = '', selectedTag = null }: Ac
 
   if (filteredActions.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-600">
+      <div className="text-center py-12 text-slate-600 dark:text-slate-400">
         <p className="text-lg font-medium mb-2">
           {selectedTag
             ? 'No actions found with this tag'
@@ -138,9 +138,9 @@ export function ActionsList({ filter, searchQuery = '', selectedTag = null }: Ac
     <div className="space-y-8">
       {Object.entries(actionsByBook).map(([bookTitle, bookActions]) => (
         <div key={bookTitle}>
-          <h3 className="text-lg font-semibold mb-3 text-slate-700">
+          <h3 className="text-lg font-semibold mb-3 text-slate-700 dark:text-slate-300">
             {bookTitle}
-            <span className="ml-2 text-sm font-normal text-slate-500">
+            <span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">
               ({bookActions.length} {bookActions.length === 1 ? 'action' : 'actions'})
             </span>
           </h3>

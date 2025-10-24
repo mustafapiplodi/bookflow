@@ -49,12 +49,12 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-6">
           <Star className="h-5 w-5 text-amber-500" />
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
             Top-Rated Books
           </h3>
         </div>
-        <div className="text-center py-8 text-slate-600">
-          <BookOpen className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+          <BookOpen className="h-12 w-12 mx-auto mb-3 text-slate-400 dark:text-slate-600" />
           <p>No rated books yet</p>
           <p className="text-sm text-slate-500 mt-1">
             Rate your finished books to see your favorites
@@ -68,7 +68,7 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-6">
         <Star className="h-5 w-5 text-amber-500" />
-        <h3 className="text-lg font-semibold text-slate-900">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
           Top-Rated Books
         </h3>
       </div>
@@ -83,7 +83,7 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
             href={`/library/${book.id}`}
             className="block group"
           >
-            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-slate-50 transition-colors border border-slate-100">
+            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-slate-100 dark:border-slate-700">
               <div className="flex-shrink-0 w-8 text-center">
                 <span className="text-lg font-bold text-amber-500">
                   #{index + 1}
@@ -98,7 +98,7 @@ export function TopRatedBooks({ books, isLoading }: TopRatedBooksProps) {
                   {book.author}
                 </p>
 
-                <div className="flex items-center gap-4 text-xs text-slate-500">
+                <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                   {book.dateFinished && (
                     <span>Finished {format(new Date(book.dateFinished), 'MMM yyyy')}</span>
                   )}

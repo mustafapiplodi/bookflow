@@ -47,8 +47,8 @@ export function NoteTags({ noteId, editable = false }: NoteTagsProps) {
   if (isLoading) {
     return (
       <div className="flex gap-1 flex-wrap">
-        <div className="h-5 w-16 bg-slate-200 rounded animate-pulse" />
-        <div className="h-5 w-20 bg-slate-200 rounded animate-pulse" />
+        <div className="h-5 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-5 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
       </div>
     )
   }
@@ -68,7 +68,7 @@ export function NoteTags({ noteId, editable = false }: NoteTagsProps) {
               {editable && (
                 <button
                   onClick={() => handleRemoveTag(tag.tag_name)}
-                  className="ml-1 hover:bg-slate-300 rounded-full p-0.5"
+                  className="ml-1 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-full p-0.5"
                   disabled={removeTag.isPending}
                 >
                   <X className="w-3 h-3" />

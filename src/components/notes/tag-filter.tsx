@@ -16,9 +16,9 @@ export function TagFilter({ selectedTag, onSelectTag }: TagFilterProps) {
   if (isLoading) {
     return (
       <div className="flex gap-2 flex-wrap">
-        <div className="h-7 w-20 bg-slate-200 rounded animate-pulse" />
-        <div className="h-7 w-24 bg-slate-200 rounded animate-pulse" />
-        <div className="h-7 w-16 bg-slate-200 rounded animate-pulse" />
+        <div className="h-7 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-7 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+        <div className="h-7 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
       </div>
     )
   }
@@ -30,8 +30,8 @@ export function TagFilter({ selectedTag, onSelectTag }: TagFilterProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <TagIcon className="w-4 h-4 text-slate-600" />
-        <h3 className="text-sm font-medium text-slate-700">Filter by Tag</h3>
+        <TagIcon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+        <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Filter by Tag</h3>
         {selectedTag && (
           <Button
             size="sm"

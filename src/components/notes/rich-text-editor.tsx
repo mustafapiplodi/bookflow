@@ -104,7 +104,7 @@ export function RichTextEditor({
   return (
     <div className="border rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-2 bg-slate-50 border-b">
+      <div className="flex flex-wrap gap-1 p-2 bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-700">
         <Button
           type="button"
           size="sm"

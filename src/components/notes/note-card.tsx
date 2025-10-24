@@ -142,13 +142,13 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
               </div>
             ) : (
               <div
-                className="text-slate-800 prose prose-sm max-w-none"
+                className="text-slate-800 dark:text-slate-200 prose dark:prose-invert prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: note.content }}
               />
             )}
             <div className="space-y-2 mt-3">
               <div className="flex items-center gap-2">
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {format(new Date(note.created_at), 'MMM d, yyyy')}
                 </p>
                 {note.is_action_item && (
@@ -179,17 +179,17 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
                     className="fixed inset-0 z-40"
                     onClick={() => setShowMenu(false)}
                   />
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-slate-200 py-1 z-50">
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
                     <button
                       onClick={handleEditClick}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </button>
                     <button
                       onClick={handleToggleAction}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center"
                     >
                       {note.is_action_item ? (
                         <>
@@ -205,7 +205,7 @@ export function NoteCard({ note, onEdit, showBookTitle = false }: NoteCardProps)
                     </button>
                     <button
                       onClick={handleDeleteClick}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center text-red-600"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center text-red-600"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete

@@ -37,12 +37,12 @@ export function ActionDrivenBooks({ books, isLoading }: ActionDrivenBooksProps) 
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-6">
           <TrendingUp className="h-5 w-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
             Action-Driven Books
           </h3>
         </div>
-        <div className="text-center py-8 text-slate-600">
-          <CheckSquare className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
+          <CheckSquare className="h-12 w-12 mx-auto mb-3 text-slate-400 dark:text-slate-600" />
           <p>No action items yet</p>
           <p className="text-sm text-slate-500 mt-1">
             Mark notes as actions to see which books drive the most change
@@ -56,7 +56,7 @@ export function ActionDrivenBooks({ books, isLoading }: ActionDrivenBooksProps) 
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-6">
         <TrendingUp className="h-5 w-5 text-blue-600" />
-        <h3 className="text-lg font-semibold text-slate-900">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
           Action-Driven Books
         </h3>
       </div>
@@ -71,7 +71,7 @@ export function ActionDrivenBooks({ books, isLoading }: ActionDrivenBooksProps) 
             href={`/library/${book.id}`}
             className="block group"
           >
-            <div className="p-4 rounded-lg hover:bg-slate-50 transition-colors border border-slate-100">
+            <div className="p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-slate-100">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
@@ -85,14 +85,14 @@ export function ActionDrivenBooks({ books, isLoading }: ActionDrivenBooksProps) 
                   <p className="text-2xl font-bold text-blue-600">
                     {book.totalActions}
                   </p>
-                  <p className="text-xs text-slate-500">actions</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">actions</p>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600">Progress</span>
-                  <span className="font-medium text-slate-900">
+                  <span className="text-slate-600 dark:text-slate-400">Progress</span>
+                  <span className="font-medium text-slate-900 dark:text-white">
                     {book.completedActions}/{book.totalActions} completed
                   </span>
                 </div>

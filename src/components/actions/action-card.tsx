@@ -122,13 +122,13 @@ export function ActionCard({ action }: ActionCardProps) {
 
   return (
     <>
-      <Card className={`p-4 hover:shadow-md transition-shadow ${isCompleted ? 'bg-green-50 border-green-200' : ''}`}>
+      <Card className={`p-4 hover:shadow-md transition-shadow ${isCompleted ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800' : ''}`}>
         <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
             {action.note.books && (
               <div className="flex items-center gap-2 mb-2">
-                <BookOpen className="h-3 w-3 text-slate-500" />
-                <p className="text-xs text-slate-500">
+                <BookOpen className="h-3 w-3 text-slate-500 dark:text-slate-400" />
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {action.note.books.title}
                 </p>
               </div>
@@ -163,27 +163,27 @@ export function ActionCard({ action }: ActionCardProps) {
               </div>
             ) : (
               <div
-                className={`text-slate-800 prose prose-sm max-w-none ${isCompleted ? 'line-through text-slate-500' : ''}`}
+                className={`text-slate-800 dark:text-slate-200 prose prose-sm max-w-none dark:prose-invert ${isCompleted ? 'line-through text-slate-500 dark:text-slate-400' : ''}`}
                 dangerouslySetInnerHTML={{ __html: action.note.content }}
               />
             )}
 
             {action.outcome && (
-              <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
-                <p className="text-xs font-semibold text-green-800 mb-1">Outcome:</p>
-                <p className="text-sm text-green-700">{action.outcome}</p>
+              <div className="mt-3 p-3 bg-green-50 dark:bg-green-950 rounded-md border border-green-200 dark:border-green-800">
+                <p className="text-xs font-semibold text-green-800 dark:text-green-200 mb-1">Outcome:</p>
+                <p className="text-sm text-green-700 dark:text-green-300">{action.outcome}</p>
               </div>
             )}
 
             <div className="space-y-2 mt-3">
               <div className="flex items-center gap-2">
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Created {format(new Date(action.created_at), 'MMM d, yyyy')}
                 </p>
                 {isCompleted && action.completed_at && (
                   <>
-                    <span className="text-xs text-slate-400">•</span>
-                    <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                    <span className="text-xs text-slate-400 dark:text-slate-500">•</span>
+                    <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                       Completed {format(new Date(action.completed_at), 'MMM d, yyyy')}
                     </Badge>
                   </>
@@ -204,7 +204,7 @@ export function ActionCard({ action }: ActionCardProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-colors"
+                  className="text-xs font-medium hover:bg-green-50 dark:hover:bg-green-950 hover:text-green-700 dark:hover:text-green-300 hover:border-green-300 dark:hover:border-green-700 transition-colors"
                   onClick={handleCompleteClick}
                 >
                   <Circle className="h-4 w-4 mr-1" />
@@ -229,17 +229,17 @@ export function ActionCard({ action }: ActionCardProps) {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowMenu(false)}
                   />
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-slate-200 py-1 z-50">
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
                     <button
                       onClick={handleEditClick}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center dark:text-slate-200"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </button>
                     <button
                       onClick={handleUnmarkAction}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center dark:text-slate-200"
                       disabled={toggleAction.isPending}
                     >
                       <Square className="h-4 w-4 mr-2" />
@@ -247,7 +247,7 @@ export function ActionCard({ action }: ActionCardProps) {
                     </button>
                     <button
                       onClick={handleDeleteClick}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 flex items-center text-red-600"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center text-red-600 dark:text-red-400"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete

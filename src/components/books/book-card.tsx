@@ -49,7 +49,7 @@ export function BookCard({ book }: BookCardProps) {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <BookOpen className="w-12 h-12 text-slate-400" />
+                <BookOpen className="w-12 h-12 text-slate-400 dark:text-slate-600" />
               </div>
             )}
           </div>

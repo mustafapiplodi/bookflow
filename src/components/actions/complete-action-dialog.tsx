@@ -61,9 +61,9 @@ export function CompleteActionDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="p-3 bg-slate-50 rounded-md">
+          <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-md">
             <p className="text-sm font-medium text-slate-700 mb-1">Action:</p>
-            <p className="text-sm text-slate-600">{actionContent}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{actionContent}</p>
           </div>
 
           <div className="space-y-2">
@@ -78,7 +78,7 @@ export function CompleteActionDialog({
               rows={4}
               className="resize-none"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Recording outcomes helps you remember which books had the biggest impact
             </p>
           </div>

@@ -43,7 +43,7 @@ export function ReadingTimeChart({ data, isLoading }: ReadingTimeChartProps) {
         <h3 className="text-lg font-semibold text-slate-900 mb-1">
           Reading Activity (Last 7 Days)
         </h3>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           {totalMinutes} total minutes • {avgMinutes} average per day
         </p>
       </div>

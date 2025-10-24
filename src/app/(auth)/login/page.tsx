@@ -62,16 +62,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
           <BookOpen className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold">BookFlow</span>
+          <span className="text-2xl font-bold dark:text-white">BookFlow</span>
         </Link>
 
-        <div className="bg-white p-8 rounded-lg border shadow-sm">
-          <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
-          <p className="text-slate-600 mb-6">
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border dark:border-slate-700 shadow-sm">
+          <h1 className="text-2xl font-bold mb-2 dark:text-white">Welcome back</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">
             Sign in to your account to continue reading
           </p>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
           </Form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-slate-600">Don't have an account? </span>
+            <span className="text-slate-600 dark:text-slate-400">Don't have an account? </span>
             <Link href="/signup" className="text-primary hover:underline">
               Sign up
             </Link>

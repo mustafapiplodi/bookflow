@@ -50,11 +50,11 @@ export function ReadingPatternsChart({ data, isLoading }: ReadingPatternsChartPr
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-6">
           <Clock className="h-5 w-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
             Reading Patterns
           </h3>
         </div>
-        <div className="text-center py-8 text-slate-600">
+        <div className="text-center py-8 text-slate-600 dark:text-slate-400">
           <Clock className="h-12 w-12 mx-auto mb-3 text-slate-400" />
           <p>No reading sessions yet</p>
           <p className="text-sm text-slate-500 mt-1">
@@ -70,11 +70,11 @@ export function ReadingPatternsChart({ data, isLoading }: ReadingPatternsChartPr
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <Clock className="h-5 w-5 text-purple-600" />
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
             Reading Patterns
           </h3>
         </div>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Your preferred reading times • Peak: {formatHour(peakHour.hour)}
         </p>
       </div>

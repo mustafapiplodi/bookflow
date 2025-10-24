@@ -67,16 +67,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
           <BookOpen className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold">BookFlow</span>
+          <span className="text-2xl font-bold dark:text-white">BookFlow</span>
         </Link>
 
-        <div className="bg-white p-8 rounded-lg border shadow-sm">
-          <h1 className="text-2xl font-bold mb-2">Create your account</h1>
-          <p className="text-slate-600 mb-6">
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border dark:border-slate-700 shadow-sm">
+          <h1 className="text-2xl font-bold mb-2 dark:text-white">Create your account</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">
             Start tracking your reading journey today
           </p>
 
@@ -132,7 +132,7 @@ export default function SignupPage() {
           </Form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-slate-600">Already have an account? </span>
+            <span className="text-slate-600 dark:text-slate-400">Already have an account? </span>
             <Link href="/login" className="text-primary hover:underline">
               Sign in
             </Link>
