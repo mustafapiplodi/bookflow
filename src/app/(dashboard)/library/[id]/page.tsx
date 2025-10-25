@@ -14,6 +14,7 @@ import { InlineNoteEditor } from '@/components/notes/inline-note-editor'
 import { NotesList } from '@/components/notes/notes-list'
 import { BookActionsList } from '@/components/actions/book-actions-list'
 import { BookCompletionDialog } from '@/components/books/book-completion-dialog'
+import { BookCoverUpload } from '@/components/books/book-cover-upload'
 import { TagFilter } from '@/components/notes/tag-filter'
 import { NoteCard } from '@/components/notes/note-card'
 import { createClient } from '@/lib/supabase/client'
@@ -122,21 +123,16 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
       <div className="grid lg:grid-cols-[300px,1fr] gap-8 mb-8">
         {/* Book Cover & Info */}
         <div>
-          <div className="aspect-[2/3] bg-gradient-to-br from-slate-200 to-slate-300 rounded-lg overflow-hidden mb-4">
-            {book.cover_image_url ? (
-              <img
-                src={book.cover_image_url}
-                alt={book.title}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <FileText className="w-16 h-16 text-slate-400" />
-              </div>
-            )}
-          </div>
+          <BookCoverUpload
+            bookId={book.id}
+            currentCoverUrl={book.cover_image_url}
+            onUploadSuccess={() => {
+              // Refresh the page data
+              window.location.reload()
+            }}
+          />
 
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             {book.rating && (
               <div className="flex justify-center gap-1">
                 {[...Array(5)].map((_, i) => (
